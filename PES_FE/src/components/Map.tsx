@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { GoogleMap, LoadScript, Polygon } from "@react-google-maps/api";
 import { polygons } from "../polygons/districtConfig";
 
@@ -14,6 +14,13 @@ const center = {
 
 const Map: React.FC = () => {
   const [isLoaded, setIsLoaded] = useState(false);
+  const [polygonData, setPolygonData] = useState<typeof polygons | null>(null);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setPolygonData(polygons);
+    }, 100);
+  }, []);
 
   const handlePolygonClick = (name: string) => {
     alert(`You clicked on ${name}`);
@@ -24,9 +31,9 @@ const Map: React.FC = () => {
       googleMapsApiKey="AIzaSyCQWZOvyYbdhpAUfP00vB_XEbg4XY4WwF0"
       onLoad={() => setIsLoaded(true)}
     >
-      {isLoaded && (
+      {isLoaded && polygonData && (
         <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={12}>
-          {polygons.map((polygon) => (
+          {polygonData.map((polygon) => (
             <Polygon
               key={polygon.id}
               paths={polygon.path}
