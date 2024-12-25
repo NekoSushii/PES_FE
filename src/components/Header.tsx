@@ -4,7 +4,7 @@ import styles from '../styles/Header.module.css';
 const Header: React.FC = () => {
   return (
     <header className={styles.header}>
-      <div className={styles.logo}>MyApp</div>
+      <div className={styles.logo}>Property Neighbour</div>
       <nav>
         <a href="/login" className={styles.loginButton}>
           Login
