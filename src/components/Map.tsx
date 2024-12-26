@@ -28,7 +28,8 @@ const Map: React.FC = () => {
 
   return (
     <LoadScript
-      googleMapsApiKey="AIzaSyCQWZOvyYbdhpAUfP00vB_XEbg4XY4WwF0"
+      // googleMapsApiKey="AIzaSyCQWZOvyYbdhpAUfP00vB_XEbg4XY4WwF0"
+      googleMapsApiKey="asdasdasdasd"
       onLoad={() => setIsLoaded(true)}
     >
       {isLoaded && polygonData && (
