@@ -27,8 +27,8 @@ import { districtPolygons, PolygonConfig } from "../polygons/districtConfig";
 // import { d24Polygons } from "../polygons/d24config";
 // import { d25Polygons } from "../polygons/d25config";
 // import { d26Polygons } from "../polygons/d26config";
-// import { d27Polygons } from "../polygons/d27config";
-import { d28Polygons } from "../polygons/d28config";
+import { d27Polygons, d27WriteUp } from "../polygons/d27Config";
+import { d28Polygons, d28WriteUp } from "../polygons/d28config";
 
 const containerStyle = {
   width: "100%",
@@ -67,7 +67,7 @@ const districtPolygonMapping: Record<number, PolygonConfig[]> = {
   // 24: d24Polygons,
   // 25: d25Polygons,
   // 26: d26Polygons,
-  // 27: d27Polygons,
+  27: d27Polygons,
   28: d28Polygons,
 };
 
@@ -75,8 +75,11 @@ const Map: React.FC = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [polygonData, setPolygonData] = useState<typeof districtPolygons | null>(null);
   const [focusedPolygonData, setFocusedPolygonData] = useState<PolygonConfig[] | null>(null);
+  const [focusedDistrict, setFocusedDistrict] = useState<number | null>(null);
   const [mapInstance, setMapInstance] = useState<google.maps.Map | null>(null);
   const [isFocused, setIsFocused] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState<{ title: string; content: string } | null>(null);
 
   const mapRef = useRef<google.maps.Map | null>(null);
 
@@ -95,7 +98,28 @@ const Map: React.FC = () => {
   
       const districtPolygons = districtPolygonMapping[polygon.id as number] || null;
       setFocusedPolygonData(districtPolygons);
+      setFocusedDistrict(polygon.id);
     }
+  };
+
+  const handleIndvPropClickModal = (polygon: typeof d28Polygons[0]) => {
+    if (isFocused) {
+      var writeUp = null;
+      if (focusedDistrict === 27) {
+        writeUp = d27WriteUp.find((writeUp) => writeUp.id === polygon.id);
+      } else if (focusedDistrict === 28) {
+        writeUp = d28WriteUp.find((writeUp) => writeUp.id === polygon.id);
+      }
+      if (writeUp) {
+        setModalContent(writeUp);
+        setIsModalOpen(true);
+      }
+    }
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setModalContent(null);
   };
 
   const handleBackClick = () => {
@@ -158,10 +182,11 @@ const Map: React.FC = () => {
                     draggable: false,
                     editable: false,
                   }}
+                  onClick={() => handleIndvPropClickModal(polygon)}
                 />
               ))}
 
-            {polygonData.map((polygon) => (
+            {!isFocused && polygonData.map((polygon) => (
               <Marker
                 key={`label-${polygon.id}`}
                 position={polygon.center}
@@ -195,8 +220,43 @@ const Map: React.FC = () => {
             color: "black",
           }}
         >
-          Back
+          Reset View
         </button>
+      )}
+
+      {isModalOpen && modalContent && (
+        <div
+          style={{
+            position: "fixed",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            backgroundColor: "white",
+            padding: "20px",
+            borderRadius: "10px",
+            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+            zIndex: 1000,
+            color: "black",
+          }}
+        >
+          <h2>{modalContent.title}</h2>
+          <div dangerouslySetInnerHTML={{ __html: modalContent.content }} />
+          <button
+            onClick={closeModal}
+            style={{
+              marginTop: "10px",
+              padding: "10px 20px",
+              backgroundColor: "#007BFF",
+              color: "white",
+              border: "none",
+              borderRadius: "5px",
+              cursor: "pointer",
+
+            }}
+          >
+            Close
+          </button>
+        </div>
       )}
     </div>
   );

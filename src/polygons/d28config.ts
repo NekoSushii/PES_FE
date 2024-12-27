@@ -32,3 +32,17 @@ export interface PolygonConfig {
       fillColor: "#FF00FF",
     },
   ];
+
+
+  export const d28WriteUp = [
+    {
+      id: 1,
+      title: "13/14/15/16 Lambeth Walk",
+      content: "<p>This area is known for its vibrant community and historic significance...</p>",
+    },
+    {
+      id: 2,
+      title: "35 Lambeth Walk",
+      content: "<p>A quiet residential area with beautiful parks and amenities nearby...</p>",
+    },
+  ];
