@@ -50,6 +50,7 @@ export interface PolygonConfig {
     //     { lat: 1.3481, lng: 103.8038 },
     //     { lat: 1.3471, lng: 103.8018 },
     //   ],
+    //   center: { lat: 1.384565, lng: 103.810866},
     //   fillColor: "#FFFF00",
     // },
     {
