@@ -25,7 +25,7 @@ import { districtPolygons, PolygonConfig } from "../polygons/districtConfig";
 // import { d22Polygons } from "../polygons/d22config";
 // import { d23Polygons } from "../polygons/d23config";
 // import { d24Polygons } from "../polygons/d24config";
-// import { d25Polygons } from "../polygons/d25config";
+import { d25Polygons, d25WriteUp } from "../polygons/d25Config";
 // import { d26Polygons } from "../polygons/d26config";
 import { d27Polygons, d27WriteUp } from "../polygons/d27Config";
 import { d28Polygons, d28WriteUp } from "../polygons/d28Config";
@@ -65,7 +65,7 @@ const districtPolygonMapping: Record<number, PolygonConfig[]> = {
   // 22: d22Polygons,
   // 23: d23Polygons,
   // 24: d24Polygons,
-  // 25: d25Polygons,
+  25: d25Polygons,
   // 26: d26Polygons,
   27: d27Polygons,
   28: d28Polygons,
@@ -105,7 +105,9 @@ const Map: React.FC = () => {
   const handleIndvPropClickModal = (polygon: typeof d28Polygons[0]) => {
     if (isFocused) {
       var writeUp = null;
-      if (focusedDistrict === 27) {
+      if (focusedDistrict === 25) {
+        writeUp = d25WriteUp.find((writeUp) => writeUp.id === polygon.id);
+      } else if (focusedDistrict === 27) {
         writeUp = d27WriteUp.find((writeUp) => writeUp.id === polygon.id);
       } else if (focusedDistrict === 28) {
         writeUp = d28WriteUp.find((writeUp) => writeUp.id === polygon.id);
