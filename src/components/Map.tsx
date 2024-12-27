@@ -1,6 +1,34 @@
 import React, { useState, useEffect, useRef } from "react";
 import { GoogleMap, LoadScript, Marker, Polygon } from "@react-google-maps/api";
-import { districtPolygons } from "../polygons/districtConfig";
+import { districtPolygons, PolygonConfig } from "../polygons/districtConfig";
+// import { d1Polygons } from "../polygons/d1config";
+// import { d2Polygons } from "../polygons/d2config";
+// import { d3Polygons } from "../polygons/d3config";
+// import { d4Polygons } from "../polygons/d4config";
+// import { d5Polygons } from "../polygons/d5config";
+// import { d6Polygons } from "../polygons/d6config";
+// import { d7Polygons } from "../polygons/d7config";
+// import { d8Polygons } from "../polygons/d8config";
+// import { d9Polygons } from "../polygons/d9config";
+// import { d10Polygons } from "../polygons/d10config";
+// import { d11Polygons } from "../polygons/d11config";
+// import { d12Polygons } from "../polygons/d12config";
+// import { d13Polygons } from "../polygons/d13config";
+// import { d14Polygons } from "../polygons/d14config";
+// import { d15Polygons } from "../polygons/d15config";
+// import { d16Polygons } from "../polygons/d16config";
+// import { d17Polygons } from "../polygons/d17config";
+// import { d18Polygons } from "../polygons/d18config";
+// import { d19Polygons } from "../polygons/d19config";
+// import { d20Polygons } from "../polygons/d20config";
+// import { d21Polygons } from "../polygons/d21config";
+// import { d22Polygons } from "../polygons/d22config";
+// import { d23Polygons } from "../polygons/d23config";
+// import { d24Polygons } from "../polygons/d24config";
+// import { d25Polygons } from "../polygons/d25config";
+// import { d26Polygons } from "../polygons/d26config";
+// import { d27Polygons } from "../polygons/d27config";
+import { d28Polygons } from "../polygons/d28config";
 
 const containerStyle = {
   width: "100%",
@@ -12,10 +40,43 @@ const center = {
   lng: 103.8198,
 };
 
+const districtPolygonMapping: Record<number, PolygonConfig[]> = {
+  // 1: d1Polygons,
+  // 2: d2Polygons,
+  // 3: d3Polygons,
+  // 4: d4Polygons,
+  // 5: d5Polygons,
+  // 6: d6Polygons,
+  // 7: d7Polygons,
+  // 8: d8Polygons,
+  // 9: d9Polygons,
+  // 10: d10Polygons,
+  // 11: d11Polygons,
+  // 12: d12Polygons,
+  // 13: d13Polygons,
+  // 14: d14Polygons,
+  // 15: d15Polygons,
+  // 16: d16Polygons,
+  // 17: d17Polygons,
+  // 18: d18Polygons,
+  // 19: d19Polygons,
+  // 20: d20Polygons,
+  // 21: d21Polygons,
+  // 22: d22Polygons,
+  // 23: d23Polygons,
+  // 24: d24Polygons,
+  // 25: d25Polygons,
+  // 26: d26Polygons,
+  // 27: d27Polygons,
+  28: d28Polygons,
+};
+
 const Map: React.FC = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [polygonData, setPolygonData] = useState<typeof districtPolygons | null>(null);
+  const [focusedPolygonData, setFocusedPolygonData] = useState<PolygonConfig[] | null>(null);
   const [mapInstance, setMapInstance] = useState<google.maps.Map | null>(null);
+  const [isFocused, setIsFocused] = useState(false);
 
   const mapRef = useRef<google.maps.Map | null>(null);
 
@@ -30,6 +91,19 @@ const Map: React.FC = () => {
       const bounds = new google.maps.LatLngBounds();
       polygon.path.forEach((coord) => bounds.extend(coord));
       mapInstance.fitBounds(bounds);
+      setIsFocused(true);
+  
+      const districtPolygons = districtPolygonMapping[polygon.id as number] || null;
+      setFocusedPolygonData(districtPolygons);
+    }
+  };
+
+  const handleBackClick = () => {
+    if (mapInstance) {
+      mapInstance.setCenter(center);
+      mapInstance.setZoom(12);
+      setIsFocused(false);
+      setFocusedPolygonData(null);
     }
   };
 
@@ -49,23 +123,43 @@ const Map: React.FC = () => {
               mapRef.current = map;
             }}
           >
-            {polygonData.map((polygon) => (
-              <Polygon
-                key={polygon.id}
-                paths={polygon.path}
-                options={{
-                  fillColor: polygon.fillColor,
-                  fillOpacity: 0.4,
-                  strokeColor: polygon.fillColor,
-                  strokeOpacity: 0.8,
-                  strokeWeight: 2,
-                  clickable: true,
-                  draggable: false,
-                  editable: false,
-                }}
-                onClick={() => handlePolygonClick(polygon)}
-              />
-            ))}
+            {!isFocused &&
+              polygonData.map((polygon) => (
+                <Polygon
+                  key={polygon.id}
+                  paths={polygon.path}
+                  options={{
+                    fillColor: polygon.fillColor,
+                    fillOpacity: 0.4,
+                    strokeColor: polygon.fillColor,
+                    strokeOpacity: 0.8,
+                    strokeWeight: 2,
+                    clickable: true,
+                    draggable: false,
+                    editable: false,
+                  }}
+                  onClick={() => handlePolygonClick(polygon)}
+                />
+              ))}
+
+            {isFocused &&
+              focusedPolygonData &&
+              focusedPolygonData.map((polygon) => (
+                <Polygon
+                  key={polygon.id}
+                  paths={polygon.path}
+                  options={{
+                    fillColor: polygon.fillColor,
+                    fillOpacity: 0.4,
+                    strokeColor: polygon.fillColor,
+                    strokeOpacity: 0.8,
+                    strokeWeight: 2,
+                    clickable: true,
+                    draggable: false,
+                    editable: false,
+                  }}
+                />
+              ))}
 
             {polygonData.map((polygon) => (
               <Marker
@@ -83,6 +177,27 @@ const Map: React.FC = () => {
           </GoogleMap>
         )}
       </LoadScript>
+
+      {isFocused && (
+        <button
+          onClick={handleBackClick}
+          style={{
+            position: "absolute",
+            top: "10px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            zIndex: 1000,
+            padding: "10px 20px",
+            backgroundColor: "#fff",
+            border: "1px solid #ccc",
+            borderRadius: "5px",
+            cursor: "pointer",
+            color: "black",
+          }}
+        >
+          Back
+        </button>
+      )}
     </div>
   );
 };
