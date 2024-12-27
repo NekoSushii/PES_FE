@@ -28,7 +28,7 @@ import { districtPolygons, PolygonConfig } from "../polygons/districtConfig";
 // import { d25Polygons } from "../polygons/d25config";
 // import { d26Polygons } from "../polygons/d26config";
 import { d27Polygons, d27WriteUp } from "../polygons/d27Config";
-import { d28Polygons, d28WriteUp } from "../polygons/d28config";
+import { d28Polygons, d28WriteUp } from "../polygons/d28Config";
 
 const containerStyle = {
   width: "100%",
