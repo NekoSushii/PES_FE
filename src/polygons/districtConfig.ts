@@ -6,7 +6,7 @@ export interface PolygonConfig {
     fillColor: string;
   }
   
-  export const polygons: PolygonConfig[] = [
+  export const districtPolygons: PolygonConfig[] = [
     // {
     //   id: 1,
     //   name: "District 1",

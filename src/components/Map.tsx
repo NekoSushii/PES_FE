@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { GoogleMap, LoadScript, Marker, Polygon } from "@react-google-maps/api";
-import { polygons } from "../polygons/districtConfig";
+import { districtPolygons } from "../polygons/districtConfig";
 
 const containerStyle = {
   width: "100%",
@@ -14,18 +14,18 @@ const center = {
 
 const Map: React.FC = () => {
   const [isLoaded, setIsLoaded] = useState(false);
-  const [polygonData, setPolygonData] = useState<typeof polygons | null>(null);
+  const [polygonData, setPolygonData] = useState<typeof districtPolygons | null>(null);
   const [mapInstance, setMapInstance] = useState<google.maps.Map | null>(null);
 
   const mapRef = useRef<google.maps.Map | null>(null);
 
   useEffect(() => {
     setTimeout(() => {
-      setPolygonData(polygons);
+      setPolygonData(districtPolygons);
     }, 100);
   }, []);
 
-  const handlePolygonClick = (polygon: typeof polygons[0]) => {
+  const handlePolygonClick = (polygon: typeof districtPolygons[0]) => {
     if (mapInstance) {
       const bounds = new google.maps.LatLngBounds();
       polygon.path.forEach((coord) => bounds.extend(coord));
