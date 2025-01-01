@@ -1,32 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { GoogleMap, LoadScript, Marker, Polygon } from "@react-google-maps/api";
 import { districtPolygons, PolygonConfig } from "../polygons/districtConfig";
-// import { d1Polygons } from "../polygons/d1config";
-// import { d2Polygons } from "../polygons/d2config";
-// import { d3Polygons } from "../polygons/d3config";
-// import { d4Polygons } from "../polygons/d4config";
-// import { d5Polygons } from "../polygons/d5config";
-// import { d6Polygons } from "../polygons/d6config";
-// import { d7Polygons } from "../polygons/d7config";
-// import { d8Polygons } from "../polygons/d8config";
-// import { d9Polygons } from "../polygons/d9config";
-// import { d10Polygons } from "../polygons/d10config";
-// import { d11Polygons } from "../polygons/d11config";
-// import { d12Polygons } from "../polygons/d12config";
-// import { d13Polygons } from "../polygons/d13config";
-// import { d14Polygons } from "../polygons/d14config";
-// import { d15Polygons } from "../polygons/d15config";
-// import { d16Polygons } from "../polygons/d16config";
-// import { d17Polygons } from "../polygons/d17config";
-// import { d18Polygons } from "../polygons/d18config";
-// import { d19Polygons } from "../polygons/d19config";
-// import { d20Polygons } from "../polygons/d20config";
-// import { d21Polygons } from "../polygons/d21config";
-// import { d22Polygons } from "../polygons/d22config";
-// import { d23Polygons } from "../polygons/d23config";
-// import { d24Polygons } from "../polygons/d24config";
+import { d22Polygons, d22WriteUp } from "../polygons/d22Config";
+import { d23Polygons, d23WriteUp } from "../polygons/d23Config";
+import { d24Polygons, d24WriteUp } from "../polygons/d24Config";
 import { d25Polygons, d25WriteUp } from "../polygons/d25Config";
-// import { d26Polygons } from "../polygons/d26config";
+import { d26Polygons, d26WriteUp } from "../polygons/d26Config";
 import { d27Polygons, d27WriteUp } from "../polygons/d27Config";
 import { d28Polygons, d28WriteUp } from "../polygons/d28Config";
 
@@ -62,11 +41,11 @@ const districtPolygonMapping: Record<number, PolygonConfig[]> = {
   // 19: d19Polygons,
   // 20: d20Polygons,
   // 21: d21Polygons,
-  // 22: d22Polygons,
-  // 23: d23Polygons,
-  // 24: d24Polygons,
+  22: d22Polygons,
+  23: d23Polygons,
+  24: d24Polygons,
   25: d25Polygons,
-  // 26: d26Polygons,
+  26: d26Polygons,
   27: d27Polygons,
   28: d28Polygons,
 };
@@ -104,9 +83,17 @@ const Map: React.FC = () => {
 
   const handleIndvPropClickModal = (polygon: typeof d28Polygons[0]) => {
     if (isFocused) {
-      var writeUp = null;
-      if (focusedDistrict === 25) {
+      var writeUp = null; 
+      if (focusedDistrict === 22) {
+        writeUp = d22WriteUp.find((writeUp) => writeUp.id === polygon.id);
+      } else if (focusedDistrict === 23) {
+        writeUp = d23WriteUp.find((writeUp) => writeUp.id === polygon.id);
+      } else if (focusedDistrict === 24) {
+        writeUp = d24WriteUp.find((writeUp) => writeUp.id === polygon.id);
+      } else if (focusedDistrict === 25) {
         writeUp = d25WriteUp.find((writeUp) => writeUp.id === polygon.id);
+      } else if (focusedDistrict === 26) {
+        writeUp = d26WriteUp.find((writeUp) => writeUp.id === polygon.id);
       } else if (focusedDistrict === 27) {
         writeUp = d27WriteUp.find((writeUp) => writeUp.id === polygon.id);
       } else if (focusedDistrict === 28) {
