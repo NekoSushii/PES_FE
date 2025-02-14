@@ -1,16 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { GoogleMap, LoadScript, Marker, Polygon } from "@react-google-maps/api";
 import { districtPolygons, PolygonConfig } from "../polygons/districtConfig";
-import { d19Polygons, d19WriteUp } from "../polygons/d19Config";
-import { d20Polygons, d20WriteUp } from "../polygons/d20Config";
-import { d21Polygons, d21WriteUp } from "../polygons/d21Config";
-import { d22Polygons, d22WriteUp } from "../polygons/d22Config";
-import { d23Polygons, d23WriteUp } from "../polygons/d23Config";
-import { d24Polygons, d24WriteUp } from "../polygons/d24Config";
-import { d25Polygons, d25WriteUp } from "../polygons/d25Config";
-import { d26Polygons, d26WriteUp } from "../polygons/d26Config";
-import { d27Polygons, d27WriteUp } from "../polygons/d27Config";
-import { d28Polygons, d28WriteUp } from "../polygons/d28Config";
+import { bedokPolygons, bedokWriteUp } from "../polygons/bedokConfig";
+import { hougangPolygons, hougangWriteUp } from "../polygons/hougangConfig";
 
 const containerStyle = {
   width: "100%",
@@ -23,34 +15,8 @@ const center = {
 };
 
 const districtPolygonMapping: Record<number, PolygonConfig[]> = {
-  // 1: d1Polygons,
-  // 2: d2Polygons,
-  // 3: d3Polygons,
-  // 4: d4Polygons,
-  // 5: d5Polygons,
-  // 6: d6Polygons,
-  // 7: d7Polygons,
-  // 8: d8Polygons,
-  // 9: d9Polygons,
-  // 10: d10Polygons,
-  // 11: d11Polygons,
-  // 12: d12Polygons,
-  // 13: d13Polygons,
-  // 14: d14Polygons,
-  // 15: d15Polygons,
-  // 16: d16Polygons,
-  // 17: d17Polygons,
-  // 18: d18Polygons,
-  19: d19Polygons,
-  20: d20Polygons,
-  21: d21Polygons,
-  22: d22Polygons,
-  23: d23Polygons,
-  24: d24Polygons,
-  25: d25Polygons,
-  26: d26Polygons,
-  27: d27Polygons,
-  28: d28Polygons,
+  1: bedokPolygons,
+  34: hougangPolygons
 };
 
 const Map: React.FC = () => {
@@ -84,29 +50,13 @@ const Map: React.FC = () => {
     }
   };
 
-  const handleIndvPropClickModal = (polygon: typeof d28Polygons[0]) => {
+  const handleIndvPropClickModal = (polygon: typeof bedokPolygons[0]) => {
     if (isFocused) {
       var writeUp = null; 
-      if (focusedDistrict === 19) {
-        writeUp = d19WriteUp.find((writeUp) => writeUp.id === polygon.id);
-      } else if (focusedDistrict === 20) {
-        writeUp = d20WriteUp.find((writeUp) => writeUp.id === polygon.id);
-      } else if (focusedDistrict === 21) {
-        writeUp = d21WriteUp.find((writeUp) => writeUp.id === polygon.id);
-      } else if (focusedDistrict === 22) {
-        writeUp = d22WriteUp.find((writeUp) => writeUp.id === polygon.id);
-      } else if (focusedDistrict === 23) {
-        writeUp = d23WriteUp.find((writeUp) => writeUp.id === polygon.id);
-      } else if (focusedDistrict === 24) {
-        writeUp = d24WriteUp.find((writeUp) => writeUp.id === polygon.id);
-      } else if (focusedDistrict === 25) {
-        writeUp = d25WriteUp.find((writeUp) => writeUp.id === polygon.id);
-      } else if (focusedDistrict === 26) {
-        writeUp = d26WriteUp.find((writeUp) => writeUp.id === polygon.id);
-      } else if (focusedDistrict === 27) {
-        writeUp = d27WriteUp.find((writeUp) => writeUp.id === polygon.id);
-      } else if (focusedDistrict === 28) {
-        writeUp = d28WriteUp.find((writeUp) => writeUp.id === polygon.id);
+      if (focusedDistrict === 1) {
+        writeUp = bedokWriteUp.find((writeUp) => writeUp.id === polygon.id);
+      } else if (focusedDistrict === 34) {
+        writeUp = hougangWriteUp.find((writeUp) => writeUp.id === polygon.id);
       }
       if (writeUp) {
         setModalContent(writeUp);

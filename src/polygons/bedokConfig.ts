@@ -6,7 +6,7 @@ export interface PolygonConfig {
     fillColor: string;
   }
   
-  export const d19Polygons: PolygonConfig[] = [
+  export const bedokPolygons: PolygonConfig[] = [
     {
         id: 1,
         name: "Kensington Square",
@@ -39,7 +39,7 @@ export interface PolygonConfig {
     },
   ];
 
-  export const d19WriteUp = [
+  export const bedokWriteUp = [
     {
       id: 1,
       title: "Kensington Square",
