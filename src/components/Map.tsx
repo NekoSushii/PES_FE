@@ -32,12 +32,22 @@ const Map: React.FC = () => {
   const mapRef = useRef<google.maps.Map | null>(null);
 
   useEffect(() => {
+    // So that the polygons data can be fetched before maps try to render it, else it might not render at all
     setTimeout(() => {
       setPolygonData(districtPolygons);
     }, 100);
-  }, []);
 
-  const handlePolygonClick = (polygon: typeof districtPolygons[0]) => {
+    // When modal is open, the map component's overflow is not active, so user will only scroll in modal
+    if (isModalOpen) {
+      const originalOverflow = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = originalOverflow;
+      };
+    }
+  }, [isModalOpen]);
+
+  const handleDistrictPolygonClick = (polygon: typeof districtPolygons[0]) => {
     if (mapInstance) {
       const bounds = new google.maps.LatLngBounds();
       polygon.path.forEach((coord) => bounds.extend(coord));
@@ -50,7 +60,7 @@ const Map: React.FC = () => {
     }
   };
 
-  const handleIndvPropClickModal = (polygon: typeof bedokPolygons[0]) => {
+  const handlePropertyPolygonClickModal = (polygon: typeof bedokPolygons[0]) => {
     if (isFocused) {
       var writeUp = null; 
       if (focusedDistrict === 1) {
@@ -110,7 +120,7 @@ const Map: React.FC = () => {
                     draggable: false,
                     editable: false,
                   }}
-                  onClick={() => handlePolygonClick(polygon)}
+                  onClick={() => handleDistrictPolygonClick(polygon)}
                 />
               ))}
 
@@ -130,7 +140,7 @@ const Map: React.FC = () => {
                     draggable: false,
                     editable: false,
                   }}
-                  onClick={() => handleIndvPropClickModal(polygon)}
+                  onClick={() => handlePropertyPolygonClickModal(polygon)}
                 />
               ))}
 
@@ -171,7 +181,6 @@ const Map: React.FC = () => {
           Reset View
         </button>
       )}
-
       {isModalOpen && modalContent && (
         <div
           style={{
@@ -179,12 +188,16 @@ const Map: React.FC = () => {
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
+            width: "95vw",
+            height: "95vh",
             backgroundColor: "white",
             padding: "20px",
+            boxSizing: "border-box",
             borderRadius: "10px",
             boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
             zIndex: 1000,
             color: "black",
+            overflow: "auto",
           }}
         >
           <h2>{modalContent.title}</h2>
@@ -199,7 +212,6 @@ const Map: React.FC = () => {
               border: "none",
               borderRadius: "5px",
               cursor: "pointer",
-
             }}
           >
             Close
