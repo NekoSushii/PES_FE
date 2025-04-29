@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useRef } from "react";
 import { GoogleMap, LoadScript, Marker, Polygon } from "@react-google-maps/api";
-import { districtPolygons, PolygonConfig } from "../polygons/districtConfig";
+import React, { useEffect, useRef, useState } from "react";
 import { bedokPolygons, bedokWriteUp } from "../polygons/bedokConfig";
+import { districtPolygons, PolygonConfig } from "../polygons/districtConfig";
 import { hougangPolygons, hougangWriteUp } from "../polygons/hougangConfig";
 
-const containerStyle = {
+const mapContainerStyle = {
   width: "100%",
-  height: "80%",
+  height: "100%",
 };
 
 const center = {
@@ -87,7 +87,7 @@ const Map: React.FC = () => {
       >
         {isLoaded && polygonData && (
           <GoogleMap
-            mapContainerStyle={containerStyle}
+            mapContainerStyle={mapContainerStyle}
             center={center}
             zoom={12}
             onLoad={(map) => {
