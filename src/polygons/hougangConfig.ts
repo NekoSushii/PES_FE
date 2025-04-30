@@ -1,3 +1,5 @@
+import starsOfKovanFront from "../assets/Kovan/stars_of_kovan_front.jpg";
+
 export interface PolygonConfig {
     id: number;
     name: string;
@@ -9,30 +11,29 @@ export interface PolygonConfig {
   export const hougangPolygons: PolygonConfig[] = [
     {
         id: 1,
-        name: "Kensington Square",
+        name: "Stars of Kovan",
         path: [
-          { lat: 1.345571, lng: 103.881941 },
-          { lat: 1.345051, lng: 103.882279 },
-          { lat: 1.346014, lng: 103.883566 },
-          { lat: 1.346149, lng: 103.883457 },
+          { lat: 1.361353, lng: 103.888184 },
+          { lat: 1.361123, lng: 103.888192 },
+          { lat: 1.361013, lng: 103.886557 },
+          { lat: 1.361232, lng: 103.886524 },
+          { lat: 1.361992, lng: 103.887292 },
+          { lat: 1.361714, lng: 103.887592 },
+          { lat: 1.361714, lng: 103.887773 },
+          { lat: 1.361349, lng: 103.887769 },
         ],
-        center: { lat: 1.3455954517584472, lng: 103.8827586162167},
+        center: { lat: 1.361409, lng: 103.887241},
         fillColor: "#FF00FF",
       },
     {
       id: 2,
-      name: "Tai Keng Gardens",
+      name: "Jalan Rengkam",
       path: [
-        { lat: 1.349211, lng: 103.885207 },
-        { lat: 1.348452, lng: 103.885079 },
-        { lat: 1.347894, lng: 103.884795 },
-        { lat: 1.345649, lng: 103.885708 },
-        { lat: 1.346029, lng: 103.886266 },
-        { lat: 1.346593, lng: 103.886074 },
-        { lat: 1.346849, lng: 103.886322 },
-        { lat: 1.347361, lng: 103.886278 },
-        { lat: 1.347859, lng: 103.886040 },
-        { lat: 1.348814, lng: 103.886295 },
+        { lat: 1.362140, lng: 103.889621 },
+        { lat: 1.362172, lng: 103.887924 },
+        { lat: 1.362880, lng: 103.888685 },
+        { lat: 1.362830, lng: 103.889395 },
+        { lat: 1.362587, lng: 103.889619 },
       ],
       center: { lat: 1.347638, lng: 103.885405},
       fillColor: "#FF00FF",
@@ -42,12 +43,16 @@ export interface PolygonConfig {
   export const hougangWriteUp = [
     {
       id: 1,
-      title: "Kensington Square",
-      content: "<p>This area is known for its vibrant community and historic significance...</p>",
+      title: "Stars of Kovan",
+      type: "Mixed Development",
+      tenure: "Leasehold - 99 years",
+      content: `<p>Stars of Kovan</p><img src="${starsOfKovanFront}" style="width:300px; height:auto;" />`,
     },
     {
       id: 2,
-      title: "Tai Keng Gardens",
+      title: "Jalan Rengkam",
+      type: "Landed",
+      tenure: "Freehold",
       content: "<p>A quiet residential area with beautiful parks and amenities nearby...</p>",
     },
   ];

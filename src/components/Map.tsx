@@ -191,6 +191,8 @@ const Map: React.FC = () => {
             width: "95vw",
             height: "95vh",
             backgroundColor: "white",
+            width: "80%",
+            height: "80%",
             padding: "20px",
             boxSizing: "border-box",
             borderRadius: "10px",
