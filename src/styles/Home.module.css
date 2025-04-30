@@ -1,21 +1,65 @@
-.home {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
+:root {
+  --bg-clr: #1e1e1e;
 }
 
-.main {
-  flex: 1 1 auto;
+html, body, #root { height: 100%; margin: 0; }
+
+.home  { height: 100%; display: flex; flex-direction: column; }
+.main  { flex: 1 1 auto; display: flex; flex-direction: column; background: var(--bg-clr); }
+.map   { flex: 1 1 auto; display: flex; flex-direction: column; }
+
+.header {
+  position: relative;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  padding: 1rem 1.5rem;
 }
 
 .title {
   margin: 0;
-  padding: 1rem 1.5rem;
-  text-align: center;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
-.map {
-  flex: 1 1 auto;
+.hamburger {
+  --bar-h: 3px; --bar-gap: 5px;
+  width: 28px;
+  height: calc(var(--bar-h)*3 + var(--bar-gap)*2);
+  padding: 0; border: 0; background: none; cursor: pointer;
+  display: flex; flex-direction: column; justify-content: space-between;
+}
+
+.hamburger span {
+  height: var(--bar-h); width: 100%;
+  background: #111; border-radius: 2px;
+}
+
+.drawer {
+  position: fixed;
+  top: 0; left: 0;
+  width: 200px; height: 100%;
+  background: rgba(0,0,0,.85);
+  box-shadow: 2px 0 6px rgba(0,0,0,.2);
+  border-radius: 0 8px 8px 0;
+  overflow: hidden;
+  transform: translateX(-100%);
+  transition: transform .3s ease;
+  z-index: 1000;
+}
+.drawerOpen { transform: translateX(0); }
+
+.menu { display: flex; flex-direction: column; gap: 1rem; padding: 2rem 1.5rem; }
+
+.menu a {
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.35);
+  backdrop-filter: blur(2px);
+  z-index: 999;
 }
