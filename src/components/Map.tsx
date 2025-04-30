@@ -172,16 +172,16 @@ const Map: React.FC = () => {
           onClick={handleBackClick}
           style={{
             position: "absolute",
-            top: "10px",
+            top: "60px",
             left: "50%",
             transform: "translateX(-50%)",
             zIndex: 1000,
             padding: "10px 20px",
-            backgroundColor: "#fff",
+            backgroundColor: "#007BFF",
             border: "1px solid #ccc",
             borderRadius: "5px",
             cursor: "pointer",
-            color: "black",
+            color: "white",
           }}
         >
           Reset View
