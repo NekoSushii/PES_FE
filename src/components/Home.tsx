@@ -6,9 +6,10 @@ const Home: React.FC = () => {
   return (
     <div className={styles.home}>
       <main className={styles.main}>
-        <h1>Property Estates Of Singapore</h1>
-        <p>Lets take a walk through the neighbourhood</p>
-        <Map />
+        <h2 className={styles.title}>Property Neighbour</h2>
+        <div className={styles.map}>
+          <Map />
+        </div>
       </main>
     </div>
   );

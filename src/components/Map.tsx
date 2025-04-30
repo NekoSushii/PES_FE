@@ -104,6 +104,12 @@ const Map: React.FC = () => {
               setMapInstance(map);
               mapRef.current = map;
             }}
+            options={{
+              gestureHandling: "greedy",
+              scrollwheel: true,
+              draggable: true,
+              disableDoubleClickZoom: true,
+            }}
           >
             {!isFocused &&
               polygonData.map((polygon) => (
