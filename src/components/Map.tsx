@@ -204,6 +204,7 @@ const Map: React.FC = () => {
             zIndex: 1000,
             color: "black",
             overflow: "auto",
+            textAlign: "center",
           }}
         >
           <h2>{modalContent.title}</h2>
