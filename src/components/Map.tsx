@@ -19,6 +19,8 @@ const districtPolygonMapping: Record<number, PolygonConfig[]> = {
   34: hougangPolygons
 };
 
+const maxZoomOutScale = 12;
+
 const Map: React.FC = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [polygonData, setPolygonData] = useState<typeof districtPolygons | null>(null);
@@ -50,11 +52,16 @@ const Map: React.FC = () => {
   const handleDistrictPolygonClick = (polygon: typeof districtPolygons[0]) => {
     if (mapInstance) {
       const bounds = new google.maps.LatLngBounds();
-      polygon.path.forEach((coord) => bounds.extend(coord));
-      mapInstance.fitBounds(bounds);
-      setIsFocused(true);
+      polygon.path.forEach(coord => bounds.extend(coord));
   
-      const districtPolygons = districtPolygonMapping[polygon.id as number] || null;
+      mapInstance.fitBounds(bounds);
+  
+      google.maps.event.addListenerOnce(mapInstance, "idle", () => {
+        mapInstance.setZoom(14.5);
+      });
+  
+      setIsFocused(true);
+      const districtPolygons = districtPolygonMapping[polygon.id as number] ?? null;
       setFocusedPolygonData(districtPolygons);
       setFocusedDistrict(polygon.id);
     }
@@ -83,7 +90,7 @@ const Map: React.FC = () => {
   const handleBackClick = () => {
     if (mapInstance) {
       mapInstance.setCenter(center);
-      mapInstance.setZoom(12);
+      mapInstance.setZoom(maxZoomOutScale);
       setIsFocused(false);
       setFocusedPolygonData(null);
     }
@@ -99,7 +106,7 @@ const Map: React.FC = () => {
           <GoogleMap
             mapContainerStyle={mapContainerStyle}
             center={center}
-            zoom={12}
+            zoom={maxZoomOutScale}
             onLoad={(map) => {
               setMapInstance(map);
               mapRef.current = map;
