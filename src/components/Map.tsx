@@ -3,6 +3,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { bedokPolygons, bedokWriteUp } from "../polygons/bedokConfig";
 import { districtPolygons, PolygonConfig } from "../polygons/districtConfig";
 import { hougangPolygons, hougangWriteUp } from "../polygons/hougangConfig";
+import { museumPolygons, museumWriteUp } from "../polygons/MuseumConfig";
+import { rochorPolygons, rochorWriteUp } from "../polygons/rochorConfig";
 
 const mapContainerStyle = {
   width: "100%",
@@ -16,7 +18,9 @@ const center = {
 
 const districtPolygonMapping: Record<number, PolygonConfig[]> = {
   1: bedokPolygons,
-  34: hougangPolygons
+  34: hougangPolygons,
+  42: museumPolygons,
+  47: rochorPolygons,
 };
 
 const maxZoomOutScale = 12;
@@ -74,6 +78,10 @@ const Map: React.FC = () => {
         writeUp = bedokWriteUp.find((writeUp) => writeUp.id === polygon.id);
       } else if (focusedDistrict === 34) {
         writeUp = hougangWriteUp.find((writeUp) => writeUp.id === polygon.id);
+      } else if (focusedDistrict === 42) {
+        writeUp = museumWriteUp.find((writeUp) => writeUp.id === polygon.id);
+      } else if (focusedDistrict === 47) {
+        writeUp = rochorWriteUp.find((writeUp) => writeUp.id === polygon.id);
       }
       if (writeUp) {
         setModalContent(writeUp);
