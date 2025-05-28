@@ -1,10 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "../styles/Home.module.css";
 import Map from "./Map";
 
 const Home: React.FC = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [popupOpen, setPopupOpen] = useState(false);          // NEW
+
   const toggleDrawer = () => setDrawerOpen(o => !o);
+
+  useEffect(() => {
+    setPopupOpen(true);
+  }, []);
 
   return (
     <div className={styles.home}>
@@ -19,6 +25,30 @@ const Home: React.FC = () => {
 
       {drawerOpen && (
         <div className={styles.overlay} onClick={toggleDrawer} />
+      )}
+
+      {popupOpen && (
+        <>
+          <div
+            className={styles.popupBackdrop}
+            onClick={() => setPopupOpen(false)}
+          />
+
+          <div className={styles.popup} role="dialog" aria-modal="true">
+            <button
+              aria-label="Close popup"
+              className={styles.popupClose}
+              onClick={() => setPopupOpen(false)}
+            >
+              &times;
+            </button>
+
+            <h4 className={styles.popupHeading}>Welcome</h4>
+            <p className={styles.popupText}>This app is still in development, and the only areas which have been visited are in Hougang, Rochor and Museum.</p>
+            <p className={styles.popupText}>Do note that these are not postal districts but planning districts.</p>
+            <p className={styles.popupText}>Have fun!</p>
+          </div>
+        </>
       )}
 
       <main className={styles.main}>
