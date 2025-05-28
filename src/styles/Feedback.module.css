@@ -1,0 +1,42 @@
+.form {
+    max-width: 480px;
+    margin: 3rem auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+  
+  .label {
+    display: flex;
+    flex-direction: column;
+    font-weight: 500;
+    gap: 0.25rem;
+  }
+  
+  input,
+  textarea {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 0.375rem;
+    font: inherit;
+  }
+  
+  button {
+    align-self: flex-start;
+    padding: 0.5rem 1.25rem;
+    border: none;
+    border-radius: 0.375rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  
+  button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .thankYou {
+    text-align: center;
+    margin-top: 4rem;
+  }
+  

@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import styles from "../styles/Home.module.css";
 import Map from "./Map";
 
 const Home: React.FC = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [popupOpen, setPopupOpen] = useState(false);          // NEW
+  const [popupOpen, setPopupOpen] = useState(false);
 
   const toggleDrawer = () => setDrawerOpen(o => !o);
 
@@ -18,8 +19,8 @@ const Home: React.FC = () => {
         className={`${styles.drawer} ${drawerOpen ? styles.drawerOpen : ""}`}
       >
         <nav className={styles.menu}>
-          <a href="login">Login</a>
-          <a href="feedback">Feedback</a>
+          {/* <Link to="login">Login</Link> */}
+          <Link to="feedback">Feedback</Link>
         </nav>
       </aside>
 
