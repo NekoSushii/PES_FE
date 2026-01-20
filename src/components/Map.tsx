@@ -7,6 +7,8 @@ import { museumPolygons } from "../polygons/MuseumConfig";
 import { rochorPolygons } from "../polygons/rochorConfig";
 import { useWriteUps } from "../hooks/useWriteUps";
 import { WriteUp } from "../firebase/writeupService";
+import ContributeModal from "./ContributeModal";
+import Toast from "./Toast";
 
 const mapContainerStyle = {
   width: "100%",
@@ -35,12 +37,19 @@ const Map: React.FC = () => {
   const [mapInstance, setMapInstance] = useState<google.maps.Map | null>(null);
   const [isFocused, setIsFocused] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalContent, setModalContent] = useState<WriteUp | null>(null);
+  const [modalWriteUps, setModalWriteUps] = useState<WriteUp[]>([]);
+  const [currentWriteUpIndex, setCurrentWriteUpIndex] = useState(0);
+  
+  // Contribute modal state
+  const [isContributeModalOpen, setIsContributeModalOpen] = useState(false);
+  const [selectedPolygon, setSelectedPolygon] = useState<PolygonConfig | null>(null);
+  
+  // Toast state
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
   const mapRef = useRef<google.maps.Map | null>(null);
   
-  // Fetch writeups from Firestore based on focused district
-  const { getWriteUpById, loading: writeUpsLoading } = useWriteUps(focusedDistrict);
+  const { getWriteUpsById, loading: writeUpsLoading } = useWriteUps(focusedDistrict);
 
   useEffect(() => {
     // So that the polygons data can be fetched before maps try to render it, else it might not render at all
@@ -78,17 +87,18 @@ const Map: React.FC = () => {
 
   const handlePropertyPolygonClickModal = (polygon: PolygonConfig) => {
     if (isFocused && !writeUpsLoading) {
-      const writeUp = getWriteUpById(polygon.id);
-      if (writeUp) {
-        setModalContent(writeUp);
-        setIsModalOpen(true);
-      }
+      setSelectedPolygon(polygon);
+      const writeUps = getWriteUpsById(polygon.id);
+      setModalWriteUps(writeUps);
+      setCurrentWriteUpIndex(0);
+      setIsModalOpen(true);
     }
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
-    setModalContent(null);
+    setModalWriteUps([]);
+    setCurrentWriteUpIndex(0);
   };
 
   const handleBackClick = () => {
@@ -100,6 +110,25 @@ const Map: React.FC = () => {
       setFocusedDistrict(null);
     }
   };
+
+  const handleContributeClick = () => {
+    setIsModalOpen(false);
+    setIsContributeModalOpen(true);
+  };
+
+  const handleContributionSuccess = () => {
+    setToast({ message: 'Review submitted successfully! It will be reviewed before publishing.', type: 'success' });
+  };
+
+  const handlePrevWriteUp = () => {
+    setCurrentWriteUpIndex(prev => Math.max(0, prev - 1));
+  };
+
+  const handleNextWriteUp = () => {
+    setCurrentWriteUpIndex(prev => Math.min(modalWriteUps.length - 1, prev + 1));
+  };
+
+  const currentWriteUp = modalWriteUps[currentWriteUpIndex];
 
   return (
     <div style={{ position: "relative", height: "100%" }}>
@@ -199,7 +228,8 @@ const Map: React.FC = () => {
           Reset View
         </button>
       )}
-      {isModalOpen && modalContent && (
+
+      {isModalOpen && (
         <div
           style={{
             position: "fixed",
@@ -217,18 +247,123 @@ const Map: React.FC = () => {
             color: "black",
             overflow: "auto",
             textAlign: "center",
-            justifyContent: "center",
           }}
         >
-          <h2>{modalContent.title}</h2>
-          <p><strong>Type:</strong> {modalContent.type}</p>
-          <p><strong>Tenure:</strong> {modalContent.tenure}</p>
-          <p><strong>Year of Review:</strong> {modalContent.yearOfReview}</p>
-          <div dangerouslySetInnerHTML={{ __html: modalContent.content }} />
+          {/* Contribute Review Button */}
+          <button
+            onClick={handleContributeClick}
+            style={{
+              position: "absolute",
+              top: "15px",
+              left: "20px",
+              padding: "8px 16px",
+              backgroundColor: "#28a745",
+              color: "white",
+              border: "none",
+              borderRadius: "5px",
+              cursor: "pointer",
+              fontSize: "14px",
+            }}
+          >
+            Contribute Review
+          </button>
+
           <button
             onClick={closeModal}
             style={{
-              marginTop: "10px",
+              position: "absolute",
+              top: "10px",
+              right: "15px",
+              background: "none",
+              border: "none",
+              fontSize: "24px",
+              cursor: "pointer",
+              color: "#666",
+            }}
+          >
+            &times;
+          </button>
+
+          {currentWriteUp ? (
+            <>
+              {/* Reviewer info */}
+              <p style={{ 
+                marginTop: "10px", 
+                color: "#666", 
+                fontSize: "14px",
+                fontStyle: "italic"
+              }}>
+                Reviewed by: {currentWriteUp.reviewBy || 'Anonymous'}
+              </p>
+
+              <h2>{currentWriteUp.title}</h2>
+              <p><strong>Type:</strong> {currentWriteUp.type}</p>
+              <p><strong>Tenure:</strong> {currentWriteUp.tenure}</p>
+              <p><strong>Year of Review:</strong> {currentWriteUp.yearOfReview}</p>
+              
+              {/* Pagination controls */}
+              {modalWriteUps.length > 1 && (
+                <div style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  gap: "20px",
+                  margin: "20px 0",
+                  padding: "10px",
+                  backgroundColor: "#f5f5f5",
+                  borderRadius: "8px",
+                }}>
+                  <button
+                    onClick={handlePrevWriteUp}
+                    disabled={currentWriteUpIndex === 0}
+                    style={{
+                      padding: "10px 20px",
+                      backgroundColor: currentWriteUpIndex === 0 ? "#ccc" : "#007BFF",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "5px",
+                      cursor: currentWriteUpIndex === 0 ? "not-allowed" : "pointer",
+                      fontSize: "16px",
+                    }}
+                  >
+                    ← Previous
+                  </button>
+                  <span style={{ fontSize: "14px", color: "#666" }}>
+                    Review {currentWriteUpIndex + 1} of {modalWriteUps.length}
+                  </span>
+                  <button
+                    onClick={handleNextWriteUp}
+                    disabled={currentWriteUpIndex === modalWriteUps.length - 1}
+                    style={{
+                      padding: "10px 20px",
+                      backgroundColor: currentWriteUpIndex === modalWriteUps.length - 1 ? "#ccc" : "#007BFF",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "5px",
+                      cursor: currentWriteUpIndex === modalWriteUps.length - 1 ? "not-allowed" : "pointer",
+                      fontSize: "16px",
+                    }}
+                  >
+                    Next →
+                  </button>
+                </div>
+              )}
+
+              <div dangerouslySetInnerHTML={{ __html: currentWriteUp.content }} />
+            </>
+          ) : (
+            <>
+              <h2 style={{ marginTop: "40px" }}>{selectedPolygon?.name}</h2>
+              <p style={{ marginTop: "20px", color: "#666" }}>
+                No review available yet. Be the first to contribute!
+              </p>
+            </>
+          )}
+
+          <button
+            onClick={closeModal}
+            style={{
+              marginTop: "20px",
               padding: "10px 20px",
               backgroundColor: "#007BFF",
               color: "white",
@@ -240,6 +375,27 @@ const Map: React.FC = () => {
             Close
           </button>
         </div>
+      )}
+
+      {/* Contribute Modal */}
+      {selectedPolygon && focusedDistrict && (
+        <ContributeModal
+          isOpen={isContributeModalOpen}
+          onClose={() => setIsContributeModalOpen(false)}
+          polygonId={selectedPolygon.id}
+          districtId={focusedDistrict}
+          polygonName={selectedPolygon.name}
+          onSuccess={handleContributionSuccess}
+        />
+      )}
+
+      {/* Toast Notification */}
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
       )}
     </div>
   );

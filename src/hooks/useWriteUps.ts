@@ -28,9 +28,15 @@ export const useWriteUps = (districtId: number | null) => {
     fetchWriteUps();
   }, [districtId]);
 
+  // Get all writeups for a polygon (supports multiple reviews)
+  const getWriteUpsById = (polygonId: number): WriteUp[] => {
+    return writeUps.filter(w => w.id === polygonId);
+  };
+
+  // Legacy: get first writeup
   const getWriteUpById = (polygonId: number): WriteUp | undefined => {
     return writeUps.find(w => w.id === polygonId);
   };
 
-  return { writeUps, loading, error, getWriteUpById };
+  return { writeUps, loading, error, getWriteUpById, getWriteUpsById };
 };
