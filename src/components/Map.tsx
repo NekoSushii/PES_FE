@@ -1,10 +1,12 @@
 import { GoogleMap, LoadScript, Marker, Polygon } from "@react-google-maps/api";
 import React, { useEffect, useRef, useState } from "react";
-import { bedokPolygons, bedokWriteUp } from "../polygons/bedokConfig";
+import { bedokPolygons } from "../polygons/bedokConfig";
 import { districtPolygons, PolygonConfig } from "../polygons/districtConfig";
-import { hougangPolygons, hougangWriteUp } from "../polygons/hougangConfig";
-import { museumPolygons, museumWriteUp } from "../polygons/MuseumConfig";
-import { rochorPolygons, rochorWriteUp } from "../polygons/rochorConfig";
+import { hougangPolygons } from "../polygons/hougangConfig";
+import { museumPolygons } from "../polygons/MuseumConfig";
+import { rochorPolygons } from "../polygons/rochorConfig";
+import { useWriteUps } from "../hooks/useWriteUps";
+import { WriteUp } from "../firebase/writeupService";
 
 const mapContainerStyle = {
   width: "100%",
@@ -33,9 +35,12 @@ const Map: React.FC = () => {
   const [mapInstance, setMapInstance] = useState<google.maps.Map | null>(null);
   const [isFocused, setIsFocused] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalContent, setModalContent] = useState<{ title: string; content: string } | null>(null);
+  const [modalContent, setModalContent] = useState<WriteUp | null>(null);
 
   const mapRef = useRef<google.maps.Map | null>(null);
+  
+  // Fetch writeups from Firestore based on focused district
+  const { getWriteUpById, loading: writeUpsLoading } = useWriteUps(focusedDistrict);
 
   useEffect(() => {
     // So that the polygons data can be fetched before maps try to render it, else it might not render at all
@@ -71,18 +76,9 @@ const Map: React.FC = () => {
     }
   };
 
-  const handlePropertyPolygonClickModal = (polygon: typeof bedokPolygons[0]) => {
-    if (isFocused) {
-      var writeUp = null; 
-      if (focusedDistrict === 1) {
-        writeUp = bedokWriteUp.find((writeUp) => writeUp.id === polygon.id);
-      } else if (focusedDistrict === 34) {
-        writeUp = hougangWriteUp.find((writeUp) => writeUp.id === polygon.id);
-      } else if (focusedDistrict === 42) {
-        writeUp = museumWriteUp.find((writeUp) => writeUp.id === polygon.id);
-      } else if (focusedDistrict === 47) {
-        writeUp = rochorWriteUp.find((writeUp) => writeUp.id === polygon.id);
-      }
+  const handlePropertyPolygonClickModal = (polygon: PolygonConfig) => {
+    if (isFocused && !writeUpsLoading) {
+      const writeUp = getWriteUpById(polygon.id);
       if (writeUp) {
         setModalContent(writeUp);
         setIsModalOpen(true);
@@ -101,13 +97,14 @@ const Map: React.FC = () => {
       mapInstance.setZoom(maxZoomOutScale);
       setIsFocused(false);
       setFocusedPolygonData(null);
+      setFocusedDistrict(null);
     }
   };
 
   return (
     <div style={{ position: "relative", height: "100%" }}>
       <LoadScript
-        googleMapsApiKey="AIzaSyCQWZOvyYbdhpAUfP00vB_XEbg4XY4WwF0"
+        googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
         onLoad={() => setIsLoaded(true)}
       >
         {isLoaded && polygonData && (
@@ -224,6 +221,9 @@ const Map: React.FC = () => {
           }}
         >
           <h2>{modalContent.title}</h2>
+          <p><strong>Type:</strong> {modalContent.type}</p>
+          <p><strong>Tenure:</strong> {modalContent.tenure}</p>
+          <p><strong>Year of Review:</strong> {modalContent.yearOfReview}</p>
           <div dangerouslySetInnerHTML={{ __html: modalContent.content }} />
           <button
             onClick={closeModal}

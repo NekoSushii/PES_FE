@@ -38,16 +38,3 @@ export interface PolygonConfig {
       fillColor: "#FF00FF",
     },
   ];
-
-  export const bedokWriteUp = [
-    {
-      id: 1,
-      title: "Kensington Square",
-      content: "<p>This area is known for its vibrant community and historic significance...</p>",
-    },
-    {
-      id: 2,
-      title: "Tai Keng Gardens",
-      content: "<p>A quiet residential area with beautiful parks and amenities nearby...</p>",
-    },
-  ];
