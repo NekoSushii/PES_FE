@@ -1,7 +1,12 @@
-import { collection, addDoc, Timestamp } from 'firebase/firestore';
+import { collection, addDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from './config';
-import emailjs from '@emailjs/browser';
+
+export interface SectionInfo {
+  title: string;
+  text: string;
+  imageCount: number;
+}
 
 export interface ContributionData {
   polygonId: number;
@@ -11,8 +16,8 @@ export interface ContributionData {
   tenure: string;
   yearOfReview: string;
   reviewBy: string;
-  content: string;
   images: File[];
+  sections: SectionInfo[];
 }
 
 // Validation regex patterns
@@ -45,7 +50,15 @@ const DANGEROUS_PATTERNS = [
 
 export const validateContribution = (data: Omit<ContributionData, 'images' | 'polygonId' | 'districtId'>): boolean => {
   // Check for dangerous patterns in all fields
-  const allText = Object.values(data).join(' ');
+  const allText = [
+    data.title,
+    data.type,
+    data.tenure,
+    data.yearOfReview,
+    data.reviewBy,
+    ...data.sections.map(s => s.text),
+  ].join(' ');
+  
   for (const pattern of DANGEROUS_PATTERNS) {
     if (pattern.test(allText)) {
       console.warn('Dangerous pattern detected');
@@ -79,9 +92,12 @@ export const validateContribution = (data: Omit<ContributionData, 'images' | 'po
     return false;
   }
 
-  if (!VALIDATION_PATTERNS.content.test(data.content)) {
-    console.warn('Invalid content');
-    return false;
+  // Validate section texts
+  for (const section of data.sections) {
+    if (!VALIDATION_PATTERNS.content.test(section.text)) {
+      console.warn(`Invalid content in section: ${section.title}`);
+      return false;
+    }
   }
 
   return true;
@@ -95,41 +111,38 @@ const sanitizeReviewBy = (name: string): string => {
   return name;
 };
 
-export const submitContribution = async (data: ContributionData): Promise<boolean> => {
-  const { images, ...textData } = data;
-
-  // Sanitize reviewBy
-  const sanitizedReviewBy = sanitizeReviewBy(data.reviewBy);
-  const sanitizedTextData = { ...textData, reviewBy: sanitizedReviewBy };
-
-  // Validate text data
-  if (!validateContribution(sanitizedTextData)) {
-    // Silently fail - don't tell malicious actors
-    return true; // Return true to show "success" message
-  }
-
+export const submitContribution = async (data: ContributionData): Promise<void> => {
   try {
-    // Upload images to Firebase Storage
     const imageUrls: string[] = [];
-    for (const image of images) {
-      const timestamp = Date.now();
-      const sanitizedName = image.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-      const storagePath = `contributions/${data.districtId}/${timestamp}_${sanitizedName}`;
-      const storageRef = ref(storage, storagePath);
-      
-      await uploadBytes(storageRef, image);
+    
+    // Upload all images to Firebase Storage
+    for (let i = 0; i < data.images.length; i++) {
+      const file = data.images[i];
+      const fileName = `contributions/${data.districtId}/${data.polygonId}_${Date.now()}_${i}.${file.name.split('.').pop()}`;
+      const storageRef = ref(storage, fileName);
+      await uploadBytes(storageRef, file);
       const url = await getDownloadURL(storageRef);
       imageUrls.push(url);
     }
 
-    // Build content with images
+    // Build HTML content with sections and images
     let content = '';
-    imageUrls.forEach(url => {
-      content += `<img src="${url}" style="width:85%; height:auto;" />\n`;
-    });
-    content += data.content;
+    let imageIndex = 0;
+    
+    for (const section of data.sections) {
+      content += `<h2>${section.title}</h2>`;
+      content += `<p>${section.text.replace(/\n/g, '<br/>')}</p>`;
+      
+      // Add images for this section
+      for (let i = 0; i < section.imageCount; i++) {
+        if (imageIndex < imageUrls.length) {
+          content += `<img src="${imageUrls[imageIndex]}" style="width:85%; height:auto; margin: 10px 0;" />`;
+          imageIndex++;
+        }
+      }
+    }
 
-    // Save to Firestore writeups collection with isActive: false
+    // Save to Firestore
     await addDoc(collection(db, 'writeups'), {
       id: data.polygonId,
       districtId: data.districtId,
@@ -137,38 +150,13 @@ export const submitContribution = async (data: ContributionData): Promise<boolea
       type: data.type,
       tenure: data.tenure,
       yearOfReview: data.yearOfReview,
-      reviewBy: sanitizedReviewBy, // Use sanitized name
+      reviewBy: sanitizeReviewBy(data.reviewBy),
       content: content,
-      isActive: false, // Requires manual approval
-      createdAt: Timestamp.now(),
+      isActive: false,
+      createdAt: new Date(),
     });
-
-    // Send email notification
-    try {
-      await emailjs.send(
-        import.meta.env.VITE_EMAILJS_SERVICE_ID,
-        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
-        {
-          to_email: 'taypanghing@gmail.com',
-          title: data.title,
-          type: data.type,
-          tenure: data.tenure,
-          yearOfReview: data.yearOfReview,
-          reviewBy: sanitizedReviewBy, // Use sanitized name
-          content: data.content.substring(0, 1000),
-          districtId: data.districtId,
-          polygonId: data.polygonId,
-        },
-        import.meta.env.VITE_EMAILJS_PUBLIC_KEY
-      );
-    } catch (emailError) {
-      console.error('Email failed:', emailError);
-      // Continue even if email fails
-    }
-
-    return true;
   } catch (error) {
-    console.error('Failed to submit contribution:', error);
-    return false;
+    console.error('Error submitting contribution:', error);
+    throw error;
   }
 };

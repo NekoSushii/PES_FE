@@ -45,7 +45,7 @@ const Home: React.FC = () => {
             </button>
 
             <h4 className={styles.popupHeading}>Welcome</h4>
-            <p className={styles.popupText}>This app is still in development, and the only areas which have been visited are in Hougang, Rochor and Museum.</p>
+            <p className={styles.popupText}>This is an open source project that is still in development, and the only areas which are available for contribution are Hougang, Rochor and Museum.</p>
             <p className={styles.popupText}>Do note that these are not postal districts but planning districts.</p>
             <p className={styles.popupText}>Have fun!</p>
           </div>
