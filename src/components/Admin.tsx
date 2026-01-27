@@ -289,8 +289,10 @@ const Admin: React.FC = () => {
                     padding: '15px',
                     backgroundColor: '#f9f9f9',
                     borderRadius: '5px',
-                    maxHeight: '400px',
+                    maxHeight: '600px',
                     overflow: 'auto',
+                    color: 'black',
+                    textAlign: 'left',
                   }}
                   dangerouslySetInnerHTML={{ __html: contribution.content }}
                 />

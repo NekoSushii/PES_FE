@@ -9,6 +9,7 @@ export interface PolygonConfig {
 // District IDs mapping
 export const DISTRICT_IDS = {
   BEDOK: 1,
+  TANGLIN: 24,
   HOUGANG: 34,
   MUSEUM: 42,
   ROCHOR: 47,
